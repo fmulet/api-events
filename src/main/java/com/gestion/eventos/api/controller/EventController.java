@@ -1,0 +1,70 @@
+package com.gestion.eventos.api.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.gestion.eventos.api.domain.Event;
+import com.gestion.eventos.api.dto.EventRequestDto;
+import com.gestion.eventos.api.dto.EventResponseDto;
+import com.gestion.eventos.api.mapper.EventMapper;
+import com.gestion.eventos.api.service.IEventService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+/**
+ * EventController
+ */
+@RestController
+@RequestMapping("/api/v1/events")
+@RequiredArgsConstructor
+public class EventController {
+
+    private final IEventService eventService;
+    private final EventMapper eventMapper;
+
+    @GetMapping
+    public List<EventResponseDto> getAllEvents() {
+        List<Event> events = eventService.findAll();
+        return eventMapper.toEventResponseDtoList(events);
+    }
+
+    @PostMapping
+    public ResponseEntity<EventResponseDto> createEvent(@Valid @RequestBody EventRequestDto eventRequestDto) {
+        Event event = eventMapper.toEntity(eventRequestDto);
+        Event createdEvent = eventService.save(event);
+        return new ResponseEntity<>(eventMapper.toResponseDto(createdEvent), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EventResponseDto> getEventById(@PathVariable Long id) {
+        Event event = eventService.findById(id);
+        return new ResponseEntity<>(eventMapper.toResponseDto(event), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EventResponseDto> updateEvent(@PathVariable Long id,
+            @Valid @RequestBody EventRequestDto eventRequestDto) {
+        Event eventToUpdate = eventService.findById(id);
+        eventMapper.updateEventFromDto(eventRequestDto, eventToUpdate);
+        Event updatedEvent = eventService.save(eventToUpdate);
+        return new ResponseEntity<>(eventMapper.toResponseDto(updatedEvent), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
+        eventService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+}
