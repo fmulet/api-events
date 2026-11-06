@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Other ###
+.DS_Store
+*.pem
+*.p12
+*.keystore
+*.jks
+src/main/resources/application.properties
+.gitignore

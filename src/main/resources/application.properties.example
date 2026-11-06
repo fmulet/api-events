@@ -1,0 +1,15 @@
+spring.application.name=api
+# Muestra el SQL en los logs de Hibernate (nivel DEBUG)
+logging.level.org.hibernate.SQL=DEBUG
+
+# Formatea el SQL para que sea legible en múltiples líneas
+spring.jpa.properties.hibernate.format_sql=true
+
+# Muestra los valores reales que se sustituyen en los ? (nivel TRACE)
+logging.level.org.hibernate.orm.jdbc.bind=TRACE
+
+spring.jpa.hibernate.ddl-auto=update
+
+# Configuración de JWT
+jwt.secret=
+jwt.expiration=600000
