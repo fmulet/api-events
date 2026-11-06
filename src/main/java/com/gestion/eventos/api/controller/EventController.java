@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,12 +35,15 @@ public class EventController {
     private final EventMapper eventMapper;
 
     @GetMapping
-    public List<EventResponseDto> getAllEvents() {
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<EventResponseDto>> getAllEvents() {
         List<Event> events = eventService.findAll();
-        return eventMapper.toEventResponseDtoList(events);
+        List<EventResponseDto> eventResponseDtoList = eventMapper.toEventResponseDtoList(events);
+        return new ResponseEntity<>(eventResponseDtoList, HttpStatus.OK);
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<EventResponseDto> createEvent(@Valid @RequestBody EventRequestDto eventRequestDto) {
         Event event = eventMapper.toEntity(eventRequestDto);
         Event createdEvent = eventService.save(event);
@@ -47,12 +51,14 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<EventResponseDto> getEventById(@PathVariable Long id) {
         Event event = eventService.findById(id);
         return new ResponseEntity<>(eventMapper.toResponseDto(event), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<EventResponseDto> updateEvent(@PathVariable Long id,
             @Valid @RequestBody EventRequestDto eventRequestDto) {
         Event eventToUpdate = eventService.findById(id);
@@ -62,6 +68,7 @@ public class EventController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         eventService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
