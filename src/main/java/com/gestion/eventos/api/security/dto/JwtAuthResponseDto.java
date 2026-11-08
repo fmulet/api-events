@@ -7,11 +7,11 @@ import lombok.Data;
  */
 @Data
 public class JwtAuthResponseDto {
-    private String accessToken;
-    private String tokenType = "Bearer ";
 
-    public JwtAuthResponseDto(String token) {
-        this.accessToken = token;
-    }
+  private String accessToken;
+  private String tokenType = "Bearer ";
 
+  public JwtAuthResponseDto(String token) {
+    this.accessToken = token;
+  }
 }

@@ -1,7 +1,13 @@
 package com.gestion.eventos.api.controller;
 
+import com.gestion.eventos.api.domain.Event;
+import com.gestion.eventos.api.dto.EventRequestDto;
+import com.gestion.eventos.api.dto.EventResponseDto;
+import com.gestion.eventos.api.mapper.EventMapper;
+import com.gestion.eventos.api.service.IEventService;
+import jakarta.validation.Valid;
 import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,15 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gestion.eventos.api.domain.Event;
-import com.gestion.eventos.api.dto.EventRequestDto;
-import com.gestion.eventos.api.dto.EventResponseDto;
-import com.gestion.eventos.api.mapper.EventMapper;
-import com.gestion.eventos.api.service.IEventService;
-
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-
 /**
  * EventController
  */
@@ -31,47 +28,60 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EventController {
 
-    private final IEventService eventService;
-    private final EventMapper eventMapper;
+  private final IEventService eventService;
+  private final EventMapper eventMapper;
 
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<List<EventResponseDto>> getAllEvents() {
-        List<Event> events = eventService.findAll();
-        List<EventResponseDto> eventResponseDtoList = eventMapper.toEventResponseDtoList(events);
-        return new ResponseEntity<>(eventResponseDtoList, HttpStatus.OK);
-    }
+  @GetMapping
+  @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+  public ResponseEntity<List<EventResponseDto>> getAllEvents() {
+    List<Event> events = eventService.findAll();
+    List<EventResponseDto> eventResponseDtoList =
+      eventMapper.toEventResponseDtoList(events);
+    return new ResponseEntity<>(eventResponseDtoList, HttpStatus.OK);
+  }
 
-    @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<EventResponseDto> createEvent(@Valid @RequestBody EventRequestDto eventRequestDto) {
-        Event event = eventMapper.toEntity(eventRequestDto);
-        Event createdEvent = eventService.save(event);
-        return new ResponseEntity<>(eventMapper.toResponseDto(createdEvent), HttpStatus.CREATED);
-    }
+  @PostMapping
+  @PreAuthorize("hasAnyRole('ADMIN')")
+  public ResponseEntity<EventResponseDto> createEvent(
+    @Valid @RequestBody EventRequestDto eventRequestDto
+  ) {
+    Event event = eventMapper.toEntity(eventRequestDto);
+    Event createdEvent = eventService.save(event);
+    return new ResponseEntity<>(
+      eventMapper.toResponseDto(createdEvent),
+      HttpStatus.CREATED
+    );
+  }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<EventResponseDto> getEventById(@PathVariable Long id) {
-        Event event = eventService.findById(id);
-        return new ResponseEntity<>(eventMapper.toResponseDto(event), HttpStatus.OK);
-    }
+  @GetMapping("/{id}")
+  @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+  public ResponseEntity<EventResponseDto> getEventById(@PathVariable Long id) {
+    Event event = eventService.findById(id);
+    return new ResponseEntity<>(
+      eventMapper.toResponseDto(event),
+      HttpStatus.OK
+    );
+  }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<EventResponseDto> updateEvent(@PathVariable Long id,
-            @Valid @RequestBody EventRequestDto eventRequestDto) {
-        Event eventToUpdate = eventService.findById(id);
-        eventMapper.updateEventFromDto(eventRequestDto, eventToUpdate);
-        Event updatedEvent = eventService.save(eventToUpdate);
-        return new ResponseEntity<>(eventMapper.toResponseDto(updatedEvent), HttpStatus.OK);
-    }
+  @PutMapping("/{id}")
+  @PreAuthorize("hasAnyRole('ADMIN')")
+  public ResponseEntity<EventResponseDto> updateEvent(
+    @PathVariable Long id,
+    @Valid @RequestBody EventRequestDto eventRequestDto
+  ) {
+    Event eventToUpdate = eventService.findById(id);
+    eventMapper.updateEventFromDto(eventRequestDto, eventToUpdate);
+    Event updatedEvent = eventService.save(eventToUpdate);
+    return new ResponseEntity<>(
+      eventMapper.toResponseDto(updatedEvent),
+      HttpStatus.OK
+    );
+  }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
-        eventService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
+  @DeleteMapping("/{id}")
+  @PreAuthorize("hasAnyRole('ADMIN')")
+  public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
+    eventService.deleteById(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
 }

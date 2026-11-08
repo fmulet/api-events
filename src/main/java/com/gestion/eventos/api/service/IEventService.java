@@ -1,18 +1,17 @@
 package com.gestion.eventos.api.service;
 
-import java.util.List;
-
 import com.gestion.eventos.api.domain.Event;
+import java.util.List;
 
 /**
  * IEventService
  */
 public interface IEventService {
-    List<Event> findAll();
+  List<Event> findAll();
 
-    Event save(Event event);
+  Event save(Event event);
 
-    Event findById(Long id);
+  Event findById(Long id);
 
-    void deleteById(Long id);
+  void deleteById(Long id);
 }
