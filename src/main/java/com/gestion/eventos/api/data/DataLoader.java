@@ -1,8 +1,12 @@
 package com.gestion.eventos.api.data;
 
+import com.gestion.eventos.api.domain.Category;
 import com.gestion.eventos.api.domain.Role;
+import com.gestion.eventos.api.domain.Speaker;
 import com.gestion.eventos.api.domain.User;
+import com.gestion.eventos.api.repository.CategoryRepository;
 import com.gestion.eventos.api.repository.RoleRepository;
+import com.gestion.eventos.api.repository.SpeakerRepository;
 import com.gestion.eventos.api.repository.UserRepository;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +27,8 @@ public class DataLoader implements CommandLineRunner {
   private final UserRepository userRepository;
   private final RoleRepository roleRepository;
   private final PasswordEncoder passwordEncoder;
+  private final CategoryRepository categoryRepository;
+  private final SpeakerRepository speakerRepository;
 
   @Override
   @Transactional
@@ -67,6 +73,56 @@ public class DataLoader implements CommandLineRunner {
       user.setRoles(userRoles);
 
       userRepository.save(user);
+    }
+
+    if (!categoryRepository.existsByName("Tecnologia")) {
+      Category category = new Category(
+        null,
+        "Tecnología",
+        "Tecnología es una categoría de eventos relacionados a tecnología y innovación."
+      );
+      categoryRepository.save(category);
+    }
+
+    if (!categoryRepository.existsByName("Negocios")) {
+      Category category = new Category(
+        null,
+        "Negocios",
+        "Negocios es una categoría de eventos relacionados a negocios y finanzas."
+      );
+      categoryRepository.save(category);
+    }
+
+    if (!categoryRepository.existsByName("Cultura"));
+    {
+      Category category = new Category(
+        null,
+        "Cultura",
+        "Cultura es una categoría de eventos relacionados a arte, música, teatro y cultura general."
+      );
+      categoryRepository.save(category);
+    }
+
+    if (!speakerRepository.existsByEmail("john.doe@example.com")) {
+      Speaker speaker = new Speaker(
+        null,
+        "John Doe",
+        "john.doe@example.com",
+        "John Doe is a renowned speaker and author.",
+        new HashSet<>()
+      );
+      speakerRepository.save(speaker);
+    }
+
+    if (!speakerRepository.existsByEmail("jane.smith@example.com")) {
+      Speaker speaker = new Speaker(
+        null,
+        "Jane Smith",
+        "jane.smith@example.com",
+        "Jane Smith is a passionate speaker and advocate.",
+        new HashSet<>()
+      );
+      speakerRepository.save(speaker);
     }
   }
 }

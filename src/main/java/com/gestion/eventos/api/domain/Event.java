@@ -1,9 +1,5 @@
 package com.gestion.eventos.api.domain;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +12,9 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Data;
 
 /**
@@ -32,19 +31,21 @@ public class Event {
 
   @Column(nullable = false)
   private String name;
+
   @Column(nullable = false)
   private LocalDate date;
+
   @Column(nullable = false)
   private String location;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = {
-      CascadeType.PERSIST,
-      CascadeType.MERGE
-  })
+  @ManyToMany(
+    fetch = FetchType.LAZY,
+    cascade = { CascadeType.PERSIST, CascadeType.MERGE }
+  )
   @JoinTable(
-      name = "event_speakers",
-      joinColumns = @JoinColumn(name = "event_id"),
-      inverseJoinColumns = @JoinColumn(name = "speakers_id")
+    name = "event_speakers",
+    joinColumns = @JoinColumn(name = "event_id"),
+    inverseJoinColumns = @JoinColumn(name = "speakers_id")
   )
   private Set<Speaker> speakers = new HashSet<>();
 
@@ -55,7 +56,6 @@ public class Event {
   @ManyToMany(mappedBy = "attendedEvents", fetch = FetchType.LAZY)
   private Set<User> attendees = new HashSet<>();
 
-
   public void addSpeaker(Speaker speaker) {
     this.speakers.add(speaker);
     speaker.getEvents().add(this);
@@ -65,5 +65,4 @@ public class Event {
     this.speakers.remove(speaker);
     speaker.getEvents().remove(this);
   }
-
 }
