@@ -3,6 +3,7 @@ package com.gestion.eventos.api.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Set;
 import lombok.Data;
 
 /**
@@ -20,4 +21,9 @@ public class EventRequestDto {
 
   @NotBlank(message = "Location is required")
   private String location;
+
+  @NotNull(message = "Category is required")
+  private Long categoryId;
+
+  private Set<Long> speakersIds;
 }

@@ -17,8 +17,12 @@ public interface EventMapper {
   @Mapping(target = "category", ignore = true)
   @Mapping(target = "speakers", ignore = true)
   @Mapping(target = "attendees", ignore = true)
+  @Mapping(target = "id", ignore = true)
   Event toEntity(EventRequestDto eventRequestDto);
 
+  @Mapping(target = "categoryId", source = "category.id")
+  @Mapping(target = "categoryName", source = "category.name")
+  @Mapping(target = "speakersDtos", source = "speakers")
   EventResponseDto toResponseDto(Event event);
 
   List<EventResponseDto> toEventResponseDtoList(List<Event> events);
@@ -27,10 +31,7 @@ public interface EventMapper {
   @Mapping(target = "category", ignore = true)
   @Mapping(target = "speakers", ignore = true)
   @Mapping(target = "attendees", ignore = true)
-  void updateEventFromDto(
-    EventRequestDto eventRequestDto,
-    @MappingTarget Event event
-  );
+  void updateEventFromDto(EventRequestDto eventRequestDto, @MappingTarget Event event);
 
   EventSummaryDto toSummaryDto(Event event);
   List<EventSummaryDto> toSummaryDtoList(List<Event> events);

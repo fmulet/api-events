@@ -3,7 +3,7 @@ package com.gestion.eventos.api.controller;
 import com.gestion.eventos.api.domain.Category;
 import com.gestion.eventos.api.dto.CategoryDto;
 import com.gestion.eventos.api.mapper.CategoryMapper;
-import com.gestion.eventos.api.service.CategoryService;
+import com.gestion.eventos.api.service.ICategoryService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CategoryController {
 
-  private final CategoryService categoryService;
+  private final ICategoryService categoryService;
   private final CategoryMapper categoryMapper;
 
   @GetMapping

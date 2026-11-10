@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @RequiredArgsConstructor
-public class EventService implements IEventService {
+public class EventServiceImpl implements IEventService {
 
   private final EventRepository eventRepository;
 

@@ -13,6 +13,8 @@ import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * User
@@ -35,10 +37,7 @@ public class User {
   @JoinTable(
     name = "user_roles",
     joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(
-      name = "role_id",
-      referencedColumnName = "id"
-    )
+    inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
   )
   private Set<Role> roles = new HashSet<>();
 
@@ -51,6 +50,8 @@ public class User {
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "event_id")
   )
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private Set<Event> attendedEvents = new HashSet<>();
 
   public void addAttendedEvent(Event event) {

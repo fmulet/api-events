@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * Speaker
@@ -36,5 +38,7 @@ public class Speaker {
   private String bio;
 
   @ManyToMany(mappedBy = "speakers")
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private Set<Event> events = new HashSet<>();
 }
