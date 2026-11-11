@@ -6,8 +6,10 @@ import com.gestion.eventos.api.dto.EventResponseDto;
 import com.gestion.eventos.api.mapper.EventMapper;
 import com.gestion.eventos.api.service.IEventService;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -33,11 +36,13 @@ public class EventController {
 
   @GetMapping
   @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-  public ResponseEntity<List<EventResponseDto>> getAllEvents() {
-    List<Event> events = eventService.findAll();
-    List<EventResponseDto> eventResponseDtoList =
-      eventMapper.toEventResponseDtoList(events);
-    return new ResponseEntity<>(eventResponseDtoList, HttpStatus.OK);
+  public ResponseEntity<Page<EventResponseDto>> getAllEvents(
+    @RequestParam(required = false) String name,
+    @PageableDefault(page = 0, size = 10, sort = "name") Pageable pageable
+  ) {
+    Page<EventResponseDto> events = eventService.findAll(name, pageable);
+
+    return new ResponseEntity<>(events, HttpStatus.OK);
   }
 
   @PostMapping
@@ -45,8 +50,7 @@ public class EventController {
   public ResponseEntity<EventResponseDto> createEvent(
     @Valid @RequestBody EventRequestDto eventRequestDto
   ) {
-    Event event = eventMapper.toEntity(eventRequestDto);
-    Event createdEvent = eventService.save(event);
+    Event createdEvent = eventService.save(eventRequestDto);
     return new ResponseEntity<>(
       eventMapper.toResponseDto(createdEvent),
       HttpStatus.CREATED
@@ -57,10 +61,7 @@ public class EventController {
   @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
   public ResponseEntity<EventResponseDto> getEventById(@PathVariable Long id) {
     Event event = eventService.findById(id);
-    return new ResponseEntity<>(
-      eventMapper.toResponseDto(event),
-      HttpStatus.OK
-    );
+    return new ResponseEntity<>(eventMapper.toResponseDto(event), HttpStatus.OK);
   }
 
   @PutMapping("/{id}")
@@ -69,13 +70,8 @@ public class EventController {
     @PathVariable Long id,
     @Valid @RequestBody EventRequestDto eventRequestDto
   ) {
-    Event eventToUpdate = eventService.findById(id);
-    eventMapper.updateEventFromDto(eventRequestDto, eventToUpdate);
-    Event updatedEvent = eventService.save(eventToUpdate);
-    return new ResponseEntity<>(
-      eventMapper.toResponseDto(updatedEvent),
-      HttpStatus.OK
-    );
+    Event updatedEvent = eventService.update(id, eventRequestDto);
+    return new ResponseEntity<>(eventMapper.toResponseDto(updatedEvent), HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
