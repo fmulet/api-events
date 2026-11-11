@@ -23,4 +23,6 @@ public interface IEventService {
 
   List<Event> getAllEventsAndTheirDetailsProblematic();
   List<Event> getAllEventsAndTheirDetailsOptimizedWithJoinFetch();
+
+  List<Event> findAllEventsAndWithAllDetailsOptimized();
 }

@@ -2,6 +2,7 @@ package com.gestion.eventos.api.service;
 
 import com.gestion.eventos.api.domain.Event;
 import com.gestion.eventos.api.domain.Speaker;
+import com.gestion.eventos.api.domain.User;
 import com.gestion.eventos.api.dto.EventRequestDto;
 import com.gestion.eventos.api.dto.EventResponseDto;
 import com.gestion.eventos.api.exception.ResourceNotFoundException;
@@ -141,6 +142,39 @@ public class EventServiceImpl implements IEventService {
             .map(Speaker::getName)
             .collect(Collectors.joining(", "))
       );
+    });
+    return events;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<Event> findAllEventsAndWithAllDetailsOptimized() {
+    List<Event> events = eventRepository.findAllWithAllDetails();
+    events.forEach(event -> {
+      System.out.println("Event: " + event.getName());
+      if (event.getCategory() != null) {
+        System.out.println(" Category: " + event.getCategory().getName());
+      }
+      if (event.getSpeakers() != null && !event.getSpeakers().isEmpty()) {
+        System.out.println(
+          " Speakers: " +
+            event
+              .getSpeakers()
+              .stream()
+              .map(Speaker::getName)
+              .collect(Collectors.joining())
+        );
+      }
+      if (event.getAttendees() != null && !event.getAttendees().isEmpty()) {
+        System.out.println(
+          " Attended users: " +
+            event
+              .getAttendees()
+              .stream()
+              .map(User::getUsername)
+              .collect(Collectors.joining())
+        );
+      }
     });
     return events;
   }
