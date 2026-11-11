@@ -1,5 +1,6 @@
 package com.gestion.eventos.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,5 +41,6 @@ public class Speaker {
   @ManyToMany(mappedBy = "speakers")
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
+  @JsonIgnore
   private Set<Event> events = new HashSet<>();
 }

@@ -113,4 +113,35 @@ public class EventServiceImpl implements IEventService {
 
     return eventRepository.save(eventToUpdate);
   }
+
+  @Transactional(readOnly = true)
+  public List<Event> getAllEventsAndTheirDetailsProblematic() {
+    List<Event> events = eventRepository.findAll();
+    events.forEach(event -> {
+      event.getSpeakers().size();
+      event.getSpeakers().stream().map(Speaker::getName).collect(Collectors.toSet());
+      event.getCategory().getName();
+      event.getAttendees().size();
+    });
+    return events;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<Event> getAllEventsAndTheirDetailsOptimizedWithJoinFetch() {
+    List<Event> events = eventRepository.findAllWithCategoryAndSpeakers();
+    events.forEach(event -> {
+      System.out.println("Event: " + event.getName());
+      System.out.println("Category: " + event.getCategory().getName());
+      System.out.println(
+        "Speakers: " +
+          event
+            .getSpeakers()
+            .stream()
+            .map(Speaker::getName)
+            .collect(Collectors.joining(", "))
+      );
+    });
+    return events;
+  }
 }

@@ -6,6 +6,7 @@ import com.gestion.eventos.api.dto.EventResponseDto;
 import com.gestion.eventos.api.mapper.EventMapper;
 import com.gestion.eventos.api.service.IEventService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,18 @@ public class EventController {
 
   private final IEventService eventService;
   private final EventMapper eventMapper;
+
+  @GetMapping("/problematic")
+  public ResponseEntity<List<Event>> getAllEventsProblematic() {
+    List<Event> events = eventService.getAllEventsAndTheirDetailsProblematic();
+    return new ResponseEntity<>(events, HttpStatus.OK);
+  }
+
+  @GetMapping("/optimized-join-fetch")
+  public ResponseEntity<List<Event>> getAllEventsOptimizedWithJoinFetch() {
+    List<Event> events = eventService.getAllEventsAndTheirDetailsOptimizedWithJoinFetch();
+    return new ResponseEntity<>(events, HttpStatus.OK);
+  }
 
   @GetMapping
   @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
