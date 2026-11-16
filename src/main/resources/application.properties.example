@@ -1,2 +1,4 @@
+spring.config.import=optional:file:.env[.properties]
 spring.application.name=api
+spring.threads.virtual.enabled=true
 spring.profiles.active=dev
