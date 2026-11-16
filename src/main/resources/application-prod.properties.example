@@ -1,0 +1,20 @@
+spring.jpa.hibernate.ddl-auto=update
+
+# Configuración de JWT
+jwt.secret=
+jwt.expiration=600000
+
+# Configuración de la base de datos
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.driverClassName=org.postgresql.Driver
+
+# Muestra el SQL en los logs de Hibernate (nivel DEBUG)
+logging.level.org.hibernate.SQL=DEBUG
+
+# Formatea el SQL para que sea legible en múltiples líneas
+spring.jpa.properties.hibernate.format_sql=true
+
+# Muestra los valores reales que se sustituyen en los ? (nivel TRACE)
+logging.level.org.hibernate.orm.jdbc.bind=TRACE

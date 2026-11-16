@@ -1,5 +1,6 @@
 package com.gestion.eventos.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import lombok.Data;
  */
 
 @Data
+@Schema(description = "Detalles de la solicitud para crear/actualizar un evento")
 public class EventRequestDto {
 
   @NotBlank(message = "Name is required")

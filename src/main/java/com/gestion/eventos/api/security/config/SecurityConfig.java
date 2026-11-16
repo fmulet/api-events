@@ -6,6 +6,8 @@ import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -32,6 +34,7 @@ public class SecurityConfig {
   private final UserDetailsService userDetailsService;
   private final JwtAuthEntryPoint jwtAuthEntryPoint;
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final Environment environment;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,16 +47,23 @@ public class SecurityConfig {
       .sessionManagement(session ->
         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       )
-      .authorizeHttpRequests(authorize ->
-        authorize
-          .requestMatchers("/api/v1/auth/**")
-          .permitAll()
-          .requestMatchers("/h2-console/**")
-          .permitAll()
-          .anyRequest()
-          .authenticated()
-      )
-      .headers(AbstractHttpConfigurer::disable);
+      .authorizeHttpRequests(authorize -> {
+        authorize.requestMatchers("/api/v1/auth/**").permitAll();
+        if (environment.acceptsProfiles(Profiles.of("dev"))) {
+          authorize
+            .requestMatchers(
+              "/swagger-ui/**",
+              "/swagger-ui.html",
+              "/v3/api-docs/**",
+              "/v3/api-docs.yaml",
+              "/swagger-resources/**",
+              "/webjars/**"
+            )
+            .permitAll();
+        }
+        authorize.anyRequest().authenticated();
+      });
+    //.headers(AbstractHttpConfigurer::disable);
     http.addFilterBefore(
       jwtAuthenticationFilter,
       UsernamePasswordAuthenticationFilter.class

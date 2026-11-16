@@ -5,6 +5,10 @@ import com.gestion.eventos.api.dto.EventRequestDto;
 import com.gestion.eventos.api.dto.EventResponseDto;
 import com.gestion.eventos.api.mapper.EventMapper;
 import com.gestion.eventos.api.service.IEventService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/events")
 @RequiredArgsConstructor
+@Tag(name = "Eventos", description = "Operaciones relacionadas con la gestion de eventos")
 public class EventController {
 
   private final IEventService eventService;
@@ -81,6 +86,16 @@ public class EventController {
 
   @GetMapping("/{id}")
   @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+  @Operation(
+    summary = "Obtener un evento por su ID",
+    description = "Devuelve los detalles de un evento por su ID."
+  )
+  @ApiResponses(
+    value = {
+      @ApiResponse(responseCode = "200", description = "Evento encontrado exitosamente"),
+      @ApiResponse(responseCode = "404", description = "Evento no encontrado"),
+    }
+  )
   public ResponseEntity<EventResponseDto> getEventById(@PathVariable Long id) {
     Event event = eventService.findById(id);
     return new ResponseEntity<>(eventMapper.toResponseDto(event), HttpStatus.OK);
